@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #0a0f1e;
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0f1629; }
+  ::-webkit-scrollbar-thumb { background: #1e40af; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+}
+
+@layer components {
+
+  .glass-card {
+    @apply border rounded-2xl backdrop-blur-sm;
+    background: linear-gradient(145deg, rgba(30,64,175,0.08) 0%, rgba(10,15,30,0.95) 100%);
+    border-color: #1e3a5f;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .btn-primary {
+    @apply relative px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    box-shadow: 0 2px 8px rgba(29,78,216,0.35);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 14px rgba(37,99,235,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary > * { position: relative; z-index: 1; }
+
+  .btn-amber {
+    @apply relative px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    color: #0a0f1e;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    box-shadow: 0 2px 8px rgba(245,158,11,0.35);
+  }
+  .btn-amber:hover:not(:disabled) {
+    box-shadow: 0 4px 14px rgba(245,158,11,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-amber > * { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-semibold border transition-all duration-200;
+    border-color: #1e40af;
+    color: #93c5fd;
+  }
+  .btn-ghost:hover { background: rgba(30,64,175,0.15); color: #bfdbfe; }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border text-white placeholder-gray-500 transition-all duration-200 outline-none;
+    background: #0f1629;
+    border-color: #1e3a5f;
+  }
+  .input-field:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+
+  .badge-critical { @apply px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30; }
+  .badge-high     { @apply px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30; }
+  .badge-medium   { @apply px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30; }
+  .badge-low      { @apply px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30; }
+  .badge-none     { @apply px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400 border border-green-500/30; }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #f59e0b 100%);
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, #0f1629 25%, #162040 50%, #0f1629 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .stat-card {
+    @apply glass-card p-6 flex flex-col gap-2 transition-all duration-200 cursor-default;
+  }
+  .stat-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.15);
+  }
+
+  .module-card {
+    @apply glass-card p-6 flex flex-col gap-4 cursor-pointer transition-all duration-200;
+  }
+  .module-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 6px 24px rgba(37,99,235,0.2);
+    transform: translateY(-2px);
+  }
+
+  .chat-user {
+    @apply ml-auto max-w-[80%] px-4 py-3 rounded-2xl rounded-tr-sm text-sm;
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  }
+  .chat-ai {
+    @apply mr-auto max-w-[80%] px-4 py-3 rounded-2xl rounded-tl-sm text-sm;
+    background: #0f1629;
+    border: 1px solid #1e3a5f;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 transition-all duration-200 cursor-pointer;
+  }
+  .nav-item:hover { background: rgba(30,64,175,0.12); color: #93c5fd; }
+  .nav-item.active { background: rgba(30,64,175,0.2); color: #93c5fd; border: 1px solid #1e40af; }
+
+  .progress-bar  { @apply h-2 rounded-full overflow-hidden; background: #0f1629; }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-700;
+    background: linear-gradient(90deg, #1d4ed8, #f59e0b);
+  }
+}
+
+/* brand-400/500 color overrides for navy */
+.text-brand-400 { color: #60a5fa !important; }
+.text-brand-300 { color: #93c5fd !important; }
+.text-brand-200 { color: #bfdbfe !important; }
+.bg-brand-500 { background-color: #1d4ed8 !important; }
+.bg-brand-500\/20 { background-color: rgba(29,78,216,0.2) !important; }
+.bg-brand-500\/10 { background-color: rgba(29,78,216,0.1) !important; }
+.border-brand-500\/30 { border-color: rgba(29,78,216,0.3) !important; }
+.border-brand-500\/40 { border-color: rgba(29,78,216,0.4) !important; }
+.border-brand-400\/60 { border-color: rgba(96,165,250,0.6) !important; }
+.hover\:border-brand-500\/40:hover { border-color: rgba(29,78,216,0.4) !important; }
+.hover\:border-brand-500\/50:hover { border-color: rgba(29,78,216,0.5) !important; }
+.ring-brand-500\/20 { --tw-ring-color: rgba(29,78,216,0.2) !important; }
+.border-brand-500\/60 { border-color: rgba(29,78,216,0.6) !important; }
+
+.particles-bg {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); opacity: 0.12;
+  animation: float 8s ease-in-out infinite;
+}
+.orb-purple { background: #1d4ed8; }
+.orb-amber  { background: #f59e0b; }
+.orb-blue   { background: #0ea5e9; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }

@@ -1,0 +1,295 @@
+# PRAGATI Agriculture Knowledge Base
+# Source: Compiled from ICAR, KVK, and Government Agriculture Guidelines
+
+## WHEAT CULTIVATION GUIDE
+
+### Varieties
+- HD 2967: High yielding, rust resistant, suitable for North India
+- PBW 343: Punjab wheat, good for irrigated conditions
+- GW 322: Gujarat wheat, drought tolerant
+- NW 1014: Suitable for late sowing
+
+### Sowing Time
+- North India (Punjab, Haryana, UP): October 25 - November 25
+- Central India (MP, Rajasthan): November 1 - December 15
+- South India: November 15 - December 31
+
+### Seed Rate
+- Irrigated: 100 kg/hectare
+- Rainfed: 125 kg/hectare
+- Late sowing: 125-150 kg/hectare
+
+### Fertilizer Recommendation
+- Irrigated: N:P:K = 120:60:40 kg/hectare
+- Rainfed: N:P:K = 80:40:20 kg/hectare
+- Apply full P and K at sowing, split N in 3 doses
+
+### Irrigation Schedule
+1. Crown root initiation: 20-25 DAS
+2. Tillering: 40-45 DAS
+3. Jointing: 60-65 DAS
+4. Flowering: 80-85 DAS
+5. Grain filling: 100-105 DAS
+6. Dough stage: 115-120 DAS
+
+### Common Diseases
+- Yellow rust (Puccinia striiformis): Apply Propiconazole 25 EC @ 0.1%
+- Brown rust: Apply Mancozeb 75 WP @ 2.5 g/L
+- Loose smut: Seed treatment with Carboxin 37.5% + Thiram 37.5%
+
+---
+
+## RICE CULTIVATION GUIDE
+
+### Varieties
+- Swarna (MTU 7029): Most popular, high yield, suitable for flood-prone areas
+- IR 64: Short duration, good quality
+- Pusa Basmati 1121: Premium basmati, export quality
+- Sahbhagi Dhan: Drought tolerant
+
+### Nursery Management
+- Seed rate: 20-25 kg/hectare
+- Nursery area: 1/10th of main field
+- Sowing time: 15-30 days before transplanting
+
+### Transplanting
+- Age of seedlings: 20-25 days (short duration), 25-30 days (medium duration)
+- Spacing: 20x15 cm or 20x20 cm
+- 2-3 seedlings per hill
+
+### Fertilizer
+- N:P:K = 120:60:60 kg/hectare
+- Basal: Full P, K + 1/3 N
+- Top dress: 1/3 N at tillering, 1/3 N at panicle initiation
+
+### Water Management
+- Maintain 2-5 cm standing water during vegetative stage
+- Drain field 10 days before harvest
+
+### Common Pests
+- Brown Plant Hopper (BPH): Apply Imidacloprid 17.8 SL @ 0.5 ml/L
+- Stem Borer: Apply Chlorpyrifos 20 EC @ 2.5 ml/L
+- Leaf Folder: Apply Monocrotophos 36 SL @ 1.5 ml/L
+
+---
+
+## COTTON CULTIVATION GUIDE
+
+### Varieties
+- Bt Cotton hybrids: Bollgard II (most common)
+- Non-Bt: Suraj, Jayadhar (for organic farming)
+
+### Sowing
+- Kharif season: May-June
+- Spacing: 90x60 cm (irrigated), 60x30 cm (rainfed)
+- Seed rate: 2.5 kg/hectare (hybrid)
+
+### Fertilizer
+- N:P:K = 150:75:75 kg/hectare
+- Apply in 3 splits
+
+### Irrigation
+- Critical stages: Squaring, flowering, boll development
+- Avoid waterlogging
+
+### Pest Management
+- Bollworm: Bt cotton provides resistance; spray Spinosad for heavy infestation
+- Whitefly: Apply Thiamethoxam 25 WG @ 0.3 g/L
+- Aphids: Apply Dimethoate 30 EC @ 2 ml/L
+
+---
+
+## SOYBEAN CULTIVATION
+
+### Varieties
+- JS 335: Most popular in MP
+- MACS 450: Maharashtra
+- NRC 37: High protein content
+
+### Sowing
+- Season: June-July (Kharif)
+- Seed rate: 70-80 kg/hectare
+- Spacing: 45x5 cm
+
+### Fertilizer
+- N:P:K = 30:60:40 kg/hectare
+- Rhizobium inoculation reduces N requirement
+
+### Diseases
+- Yellow mosaic virus: Use resistant varieties, control whitefly vector
+- Bacterial pustule: Apply Copper oxychloride 50 WP @ 3 g/L
+
+---
+
+## SOIL HEALTH MANAGEMENT
+
+### pH Management
+- Acidic soil (pH < 6): Apply lime @ 2-4 tonnes/hectare
+- Alkaline soil (pH > 8): Apply gypsum @ 5-10 tonnes/hectare
+- Optimal pH: 6.5-7.5 for most crops
+
+### Organic Matter
+- Apply FYM (Farm Yard Manure) @ 10-15 tonnes/hectare
+- Green manuring: Dhaincha, Sunhemp
+- Vermicompost: 2-3 tonnes/hectare
+
+### Micronutrient Deficiency
+- Zinc deficiency: Apply ZnSO4 @ 25 kg/hectare
+- Iron deficiency: Apply FeSO4 @ 25 kg/hectare (foliar: 0.5%)
+- Boron deficiency: Apply Borax @ 10 kg/hectare
+
+---
+
+## GOVERNMENT SCHEMES FOR FARMERS
+
+### PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)
+- Benefit: ₹6,000 per year in 3 installments
+- Eligibility: All small and marginal farmers
+- Apply at: pmkisan.gov.in
+
+### Pradhan Mantri Fasal Bima Yojana (PMFBY)
+- Crop insurance scheme
+- Premium: 2% for Kharif, 1.5% for Rabi
+- Covers: Natural calamities, pests, diseases
+
+### Kisan Credit Card (KCC)
+- Short-term credit for crop cultivation
+- Interest rate: 4% per annum (with subsidy)
+- Limit: Based on land holding and crop
+
+### Soil Health Card Scheme
+- Free soil testing
+- Recommendations for fertilizer use
+- Apply at nearest KVK or Agriculture Department
+
+### PM Krishi Sinchai Yojana
+- Drip and sprinkler irrigation subsidy
+- 55% subsidy for small farmers
+- 45% subsidy for large farmers
+
+---
+
+## CROP ROTATION BENEFITS
+
+### Why Rotate Crops?
+- Breaks pest and disease cycles
+- Improves soil fertility
+- Reduces fertilizer requirement
+- Increases overall farm income
+
+### Recommended Rotations
+- Rice → Wheat → Mung bean
+- Cotton → Wheat → Chickpea
+- Maize → Wheat → Sunflower
+- Soybean → Wheat → Maize
+- Sugarcane → Wheat → Potato
+
+---
+
+## ORGANIC FARMING PRACTICES
+
+### Biofertilizers
+- Rhizobium: For legume crops (soybean, chickpea, groundnut)
+- Azotobacter: For non-legume crops
+- PSB (Phosphate Solubilizing Bacteria): Improves P availability
+- VAM (Vesicular Arbuscular Mycorrhiza): Improves nutrient uptake
+
+### Biopesticides
+- Trichoderma viride: Soil-borne diseases
+- Beauveria bassiana: Insect pests
+- Neem-based products: Broad spectrum pest control
+- Bt (Bacillus thuringiensis): Caterpillar pests
+
+### Composting
+- C:N ratio should be 25-30:1
+- Moisture: 50-60%
+- Turning: Every 15 days
+- Ready in: 60-90 days
+
+---
+
+## IRRIGATION MANAGEMENT
+
+### Drip Irrigation
+- Water saving: 40-60% compared to flood irrigation
+- Suitable for: Vegetables, fruits, cotton, sugarcane
+- Subsidy available under PM Krishi Sinchai Yojana
+
+### Sprinkler Irrigation
+- Water saving: 25-40%
+- Suitable for: Wheat, groundnut, vegetables
+- Good for undulating terrain
+
+### Critical Irrigation Stages
+- Wheat: Crown root, tillering, jointing, flowering, grain filling
+- Rice: Transplanting, tillering, panicle initiation, flowering
+- Maize: Knee-high, tasseling, silking, grain filling
+- Cotton: Squaring, flowering, boll development
+
+---
+
+## MARKET AND PRICE INFORMATION
+
+### Minimum Support Price (MSP) 2024-25
+- Wheat: ₹2,275 per quintal
+- Rice (Common): ₹2,300 per quintal
+- Maize: ₹2,090 per quintal
+- Soybean: ₹4,892 per quintal
+- Cotton (Medium): ₹7,121 per quintal
+- Groundnut: ₹6,783 per quintal
+- Chickpea: ₹5,440 per quintal
+
+### Where to Sell
+- APMC Mandis: Regulated markets with transparent pricing
+- e-NAM: Online National Agriculture Market (enam.gov.in)
+- FPO (Farmer Producer Organizations): Better collective bargaining
+- Direct to processors: Higher price but requires quality standards
+
+---
+
+## PEST IDENTIFICATION AND MANAGEMENT
+
+### Common Sucking Pests
+- Aphids: Small, soft-bodied insects; cause leaf curl; apply Imidacloprid
+- Whitefly: White winged insects; transmit viruses; apply Thiamethoxam
+- Thrips: Tiny insects; cause silvering of leaves; apply Spinosad
+- Mites: Very small; cause bronzing; apply Dicofol or Abamectin
+
+### Common Chewing Pests
+- Armyworm: Caterpillars; eat leaves; apply Chlorpyrifos
+- Stem borer: Bore into stems; apply Carbofuran granules
+- Pod borer (Helicoverpa): Attack pods/bolls; apply Indoxacarb
+- Cutworm: Cut seedlings at base; apply Chlorpyrifos soil drench
+
+### Integrated Pest Management (IPM)
+1. Use resistant varieties
+2. Crop rotation
+3. Biological control (natural enemies)
+4. Pheromone traps for monitoring
+5. Chemical control as last resort
+6. Follow label instructions for pesticides
+
+---
+
+## WEATHER AND CLIMATE ADVISORY
+
+### Kharif Season (June-October)
+- Sow after first good monsoon rain
+- Ensure proper drainage to avoid waterlogging
+- Monitor for fungal diseases in humid conditions
+
+### Rabi Season (October-March)
+- Sow after soil moisture is adequate
+- Protect from frost in December-January
+- Ensure irrigation at critical stages
+
+### Summer Season (March-June)
+- Short duration crops: Mung bean, cowpea, watermelon
+- Ensure adequate irrigation
+- Mulching to conserve moisture
+
+### Climate Change Adaptation
+- Use drought-tolerant varieties
+- Adopt micro-irrigation
+- Crop diversification
+- Weather-based crop insurance

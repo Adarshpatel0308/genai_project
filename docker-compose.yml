@@ -1,0 +1,78 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: pragati_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: pragati_db
+      MYSQL_USER: pragati_user
+      MYSQL_PASSWORD: pragati_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - pragati_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pragati_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=pragati_user
+      - DB_PASSWORD=pragati_pass
+      - DB_NAME=pragati_db
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=llama-3.3-70b-versatile
+      - NEBIUS_API_KEY=${NEBIUS_API_KEY}
+      - NEBIUS_VISION_MODEL=Qwen/Qwen2.5-VL-72B-Instruct
+      - NEBIUS_TEXT_MODEL=meta-llama/Llama-3.3-70B-Instruct-fast
+      - WEATHER_API_KEY=${WEATHER_API_KEY}
+      - DATA_GOV_KEY=${DATA_GOV_KEY}
+      - MAPMYINDIA_KEY=${MAPMYINDIA_KEY}
+      - OPENCAGE_KEY=${OPENCAGE_KEY}
+      - SECRET_KEY=${SECRET_KEY:-pragati_super_secret_key_change_in_production}
+      - ALLOWED_ORIGINS=["http://localhost:5173","http://localhost:80"]
+    volumes:
+      - ./backend/data:/app/data
+    networks:
+      - pragati_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pragati_frontend
+    ports:
+      - "5173:80"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    networks:
+      - pragati_network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  pragati_network:
+    driver: bridge

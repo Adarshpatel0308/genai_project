@@ -1,0 +1,43 @@
+# ─── Environment Files (Never push secrets) ───────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Python ────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+env/
+.venv/
+
+# ─── User Uploaded Files (runtime data, not application code) ──
+backend/data/uploads/*.png
+backend/data/uploads/*.jpg
+backend/data/uploads/*.jpeg
+backend/data/uploads/*.pdf
+backend/data/uploads/disease_kb/*
+backend/data/uploads/soil_kb/*
+
+# ─── Node / Frontend ───────────────────────────────────────────
+node_modules/
+frontend/dist/
+
+# ─── IDE ───────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Logs ──────────────────────────────────────────────────────
+*.log
