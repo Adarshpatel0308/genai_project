@@ -1,8 +1,7 @@
-# RDS MySQL 8.0 — Single-AZ, cost optimised
-# Uses default VPC subnets, locked to backend SG only
+# RDS subnet group using subnet IDs passed as variable
 resource "aws_db_subnet_group" "pragati" {
   name       = "pragati-db-subnet-group"
-  subnet_ids = data.aws_subnets.default.ids
+  subnet_ids = var.subnet_ids
 }
 
 resource "aws_db_instance" "mysql" {
@@ -18,10 +17,10 @@ resource "aws_db_instance" "mysql" {
   password = var.db_password
 
   db_subnet_group_name   = aws_db_subnet_group.pragati.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
+  vpc_security_group_ids = [var.security_group_id]
 
   multi_az            = false
-  publicly_accessible = false  # Only reachable from backend ECS task
+  publicly_accessible = false
   skip_final_snapshot = true
 
   auto_minor_version_upgrade = true

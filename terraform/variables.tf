@@ -1,19 +1,35 @@
 variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "ap-south-1"
+  type    = string
+  default = "ap-south-1"
 }
 
 variable "backend_image" {
-  description = "DockerHub image URI for backend e.g. youruser/pragati-backend:abc123"
-  type        = string
+  type = string
 }
 
 variable "frontend_image" {
-  description = "DockerHub image URI for frontend e.g. youruser/pragati-frontend:abc123"
+  type = string
+}
+
+# ── Networking — fetch these from AWS Console (see README below) ──
+# These are passed as GitHub Secrets because ec2:DescribeSubnets
+# is blocked by the organization's SCP policy.
+
+variable "subnet_ids" {
+  description = "Comma-separated list of subnet IDs from default VPC e.g. [\"subnet-abc\",\"subnet-xyz\"]"
+  type        = list(string)
+}
+
+variable "security_group_id" {
+  description = "Default security group ID of the default VPC"
   type        = string
 }
 
+# ── IAM — NOT needed
+# execution_role_arn removed — public DockerHub image,
+# no CloudWatch, no Secrets Manager = no IAM role required
+
+# ── Database ──
 variable "db_name" {
   type    = string
   default = "pragati_db"
@@ -29,6 +45,7 @@ variable "db_password" {
   sensitive = true
 }
 
+# ── App secrets ──
 variable "secret_key" {
   type      = string
   sensitive = true
@@ -59,10 +76,7 @@ variable "opencage_key" {
   sensitive = true
 }
 
-# After first deploy: get backend task public IP from ECS console
-# and set BACKEND_TASK_IP in GitHub Secrets, then re-run workflow.
 variable "backend_task_url" {
-  description = "http://<backend-task-public-ip>:8000 — set after first backend deploy"
-  type        = string
-  default     = "http://localhost:8000"
+  type    = string
+  default = "http://localhost:8000"
 }

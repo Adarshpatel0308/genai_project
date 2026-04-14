@@ -42,7 +42,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # ── Job 2: Deploy backend + RDS, then resolve IP, then deploy frontend ──
+  # ── Job 2: Deploy via Terraform ──
   deploy:
     name: Terraform Deploy
     runs-on: ubuntu-latest
@@ -69,15 +69,18 @@ jobs:
 
       - run: terraform validate
 
-      # ── Step A: Deploy everything with a placeholder backend URL.
-      #    This creates RDS, ECS cluster, backend service, and frontend service.
-      #    Frontend will be redeployed in Step D with the real backend IP.
+      # Step A: Deploy RDS + ECS cluster + backend service + frontend (placeholder URL)
+      # subnet_ids is written to a tfvars file to avoid shell quoting issues with JSON lists
       - name: Terraform Apply (initial)
         run: |
+          cat > ci.auto.tfvars <<EOF
+          subnet_ids = ${{ secrets.SUBNET_IDS }}
+          EOF
           terraform apply -auto-approve \
             -var="aws_region=${{ secrets.AWS_REGION }}" \
             -var="backend_image=${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
             -var="frontend_image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }}" \
+            -var="security_group_id=${{ secrets.SECURITY_GROUP_ID }}" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="secret_key=${{ secrets.SECRET_KEY }}" \
             -var="groq_api_key=${{ secrets.GROQ_API_KEY }}" \
@@ -87,7 +90,7 @@ jobs:
             -var="opencage_key=${{ secrets.OPENCAGE_KEY }}" \
             -var="backend_task_url=http://placeholder:8000"
 
-      # ── Step B: Wait for the backend ECS task to reach RUNNING state ──
+      # Step B: Wait for backend ECS task to be RUNNING
       - name: Wait for backend task to be RUNNING
         run: |
           echo "Waiting for backend task to start..."
@@ -105,12 +108,10 @@ jobs:
             sleep 15
           done
 
-      # ── Step C: Dynamically fetch the backend task's public IP ──
-      # Flow: service → task ARN → ENI attachment → ENI ID → public IP
+      # Step C: Fetch backend task public IP via ENI
       - name: Fetch backend task public IP
         id: get_backend_ip
         run: |
-          # Get the running task ARN from the backend service
           TASK_ARN=$(aws ecs list-tasks \
             --cluster pragati-cluster \
             --service-name pragati-backend \
@@ -119,7 +120,6 @@ jobs:
             --output text)
           echo "Task ARN: $TASK_ARN"
 
-          # Get the ENI (Elastic Network Interface) ID attached to the task
           ENI_ID=$(aws ecs describe-tasks \
             --cluster pragati-cluster \
             --tasks "$TASK_ARN" \
@@ -127,25 +127,26 @@ jobs:
             --output text)
           echo "ENI ID: $ENI_ID"
 
-          # Get the public IP assigned to that ENI
           PUBLIC_IP=$(aws ec2 describe-network-interfaces \
             --network-interface-ids "$ENI_ID" \
             --query "NetworkInterfaces[0].Association.PublicIp" \
             --output text)
           echo "Backend public IP: $PUBLIC_IP"
 
-          # Export as step output for use in next step
           echo "backend_url=http://$PUBLIC_IP:8000" >> $GITHUB_OUTPUT
 
-      # ── Step D: Re-apply Terraform with the real backend IP ──
-      # This updates the frontend task definition's BACKEND_URL env var
-      # so nginx correctly proxies /api/* to the live backend task.
+      # Step D: Re-apply with real backend IP so frontend nginx proxy works
+      # ci.auto.tfvars already has subnet_ids from Step A
       - name: Terraform Apply (update frontend with real backend IP)
         run: |
+          cat > ci.auto.tfvars <<EOF
+          subnet_ids = ${{ secrets.SUBNET_IDS }}
+          EOF
           terraform apply -auto-approve \
             -var="aws_region=${{ secrets.AWS_REGION }}" \
             -var="backend_image=${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
             -var="frontend_image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }}" \
+            -var="security_group_id=${{ secrets.SECURITY_GROUP_ID }}" \
             -var="db_password=${{ secrets.DB_PASSWORD }}" \
             -var="secret_key=${{ secrets.SECRET_KEY }}" \
             -var="groq_api_key=${{ secrets.GROQ_API_KEY }}" \
@@ -155,8 +156,8 @@ jobs:
             -var="opencage_key=${{ secrets.OPENCAGE_KEY }}" \
             -var="backend_task_url=${{ steps.get_backend_ip.outputs.backend_url }}"
 
-      # ── Step E: Print the frontend public IP so you know where to access the app ──
-      - name: Print frontend public IP
+      # Step E: Print frontend public IP in workflow logs
+      - name: Print app URL
         run: |
           TASK_ARN=$(aws ecs list-tasks \
             --cluster pragati-cluster \
@@ -178,5 +179,5 @@ jobs:
 
           echo "============================================"
           echo "  APP URL: http://$FRONTEND_IP"
-          echo "  API URL: http://${{ steps.get_backend_ip.outputs.backend_url }}/docs"
+          echo "  API URL: ${{ steps.get_backend_ip.outputs.backend_url }}/docs"
           echo "============================================"

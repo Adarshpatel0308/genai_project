@@ -1,8 +1,3 @@
-# Default ecsTaskExecutionRole — exists in every AWS account by default
-data "aws_iam_role" "ecs_task_execution" {
-  name = "ecsTaskExecutionRole"
-}
-
 # ── Backend Task Definition ───────────────────
 resource "aws_ecs_task_definition" "backend" {
   family                   = "pragati-backend"
@@ -10,7 +5,7 @@ resource "aws_ecs_task_definition" "backend" {
   network_mode             = "awsvpc"
   cpu                      = "1024"
   memory                   = "2048"
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution.arn
+  # execution_role_arn not needed — public DockerHub image, no CloudWatch, no Secrets Manager
 
   container_definitions = jsonencode([{
     name      = "backend"
@@ -55,7 +50,7 @@ resource "aws_ecs_task_definition" "frontend" {
   network_mode             = "awsvpc"
   cpu                      = "512"
   memory                   = "1024"
-  execution_role_arn       = data.aws_iam_role.ecs_task_execution.arn
+  # execution_role_arn not needed — public DockerHub image, no CloudWatch, no Secrets Manager
 
   container_definitions = jsonencode([{
     name      = "frontend"
@@ -87,8 +82,8 @@ resource "aws_ecs_service" "backend" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.backend.id]
+    subnets          = var.subnet_ids
+    security_groups  = [var.security_group_id]
     assign_public_ip = true
   }
 
@@ -104,8 +99,8 @@ resource "aws_ecs_service" "frontend" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.frontend.id]
+    subnets          = var.subnet_ids
+    security_groups  = [var.security_group_id]
     assign_public_ip = true
   }
 
