@@ -294,4 +294,4 @@ Every module generates downloadable PDF reports in the user's chosen language:
 - Role-based access (farmer / admin)
 - CORS configured
 - File type validation on uploads
-- AI content moderation on forum posts
+- AI content moderation on forum postss
