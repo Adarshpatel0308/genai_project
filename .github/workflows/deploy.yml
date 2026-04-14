@@ -1,0 +1,182 @@
+name: PRAGATI — Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pragati-backend
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pragati-frontend
+
+jobs:
+  # ── Job 1: Build & push both images to DockerHub ──
+  build-and-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}:${{ github.sha }},${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build & push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }},${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ── Job 2: Deploy backend + RDS, then resolve IP, then deploy frontend ──
+  deploy:
+    name: Terraform Deploy
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.0"
+
+      - run: terraform init
+
+      - run: terraform validate
+
+      # ── Step A: Deploy everything with a placeholder backend URL.
+      #    This creates RDS, ECS cluster, backend service, and frontend service.
+      #    Frontend will be redeployed in Step D with the real backend IP.
+      - name: Terraform Apply (initial)
+        run: |
+          terraform apply -auto-approve \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="backend_image=${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
+            -var="frontend_image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="secret_key=${{ secrets.SECRET_KEY }}" \
+            -var="groq_api_key=${{ secrets.GROQ_API_KEY }}" \
+            -var="nebius_api_key=${{ secrets.NEBIUS_API_KEY }}" \
+            -var="weather_api_key=${{ secrets.WEATHER_API_KEY }}" \
+            -var="data_gov_key=${{ secrets.DATA_GOV_KEY }}" \
+            -var="opencage_key=${{ secrets.OPENCAGE_KEY }}" \
+            -var="backend_task_url=http://placeholder:8000"
+
+      # ── Step B: Wait for the backend ECS task to reach RUNNING state ──
+      - name: Wait for backend task to be RUNNING
+        run: |
+          echo "Waiting for backend task to start..."
+          for i in $(seq 1 20); do
+            STATUS=$(aws ecs describe-services \
+              --cluster pragati-cluster \
+              --services pragati-backend \
+              --query "services[0].runningCount" \
+              --output text)
+            echo "Running count: $STATUS"
+            if [ "$STATUS" = "1" ]; then
+              echo "Backend task is running."
+              break
+            fi
+            sleep 15
+          done
+
+      # ── Step C: Dynamically fetch the backend task's public IP ──
+      # Flow: service → task ARN → ENI attachment → ENI ID → public IP
+      - name: Fetch backend task public IP
+        id: get_backend_ip
+        run: |
+          # Get the running task ARN from the backend service
+          TASK_ARN=$(aws ecs list-tasks \
+            --cluster pragati-cluster \
+            --service-name pragati-backend \
+            --desired-status RUNNING \
+            --query "taskArns[0]" \
+            --output text)
+          echo "Task ARN: $TASK_ARN"
+
+          # Get the ENI (Elastic Network Interface) ID attached to the task
+          ENI_ID=$(aws ecs describe-tasks \
+            --cluster pragati-cluster \
+            --tasks "$TASK_ARN" \
+            --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" \
+            --output text)
+          echo "ENI ID: $ENI_ID"
+
+          # Get the public IP assigned to that ENI
+          PUBLIC_IP=$(aws ec2 describe-network-interfaces \
+            --network-interface-ids "$ENI_ID" \
+            --query "NetworkInterfaces[0].Association.PublicIp" \
+            --output text)
+          echo "Backend public IP: $PUBLIC_IP"
+
+          # Export as step output for use in next step
+          echo "backend_url=http://$PUBLIC_IP:8000" >> $GITHUB_OUTPUT
+
+      # ── Step D: Re-apply Terraform with the real backend IP ──
+      # This updates the frontend task definition's BACKEND_URL env var
+      # so nginx correctly proxies /api/* to the live backend task.
+      - name: Terraform Apply (update frontend with real backend IP)
+        run: |
+          terraform apply -auto-approve \
+            -var="aws_region=${{ secrets.AWS_REGION }}" \
+            -var="backend_image=${{ env.BACKEND_IMAGE }}:${{ github.sha }}" \
+            -var="frontend_image=${{ env.FRONTEND_IMAGE }}:${{ github.sha }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="secret_key=${{ secrets.SECRET_KEY }}" \
+            -var="groq_api_key=${{ secrets.GROQ_API_KEY }}" \
+            -var="nebius_api_key=${{ secrets.NEBIUS_API_KEY }}" \
+            -var="weather_api_key=${{ secrets.WEATHER_API_KEY }}" \
+            -var="data_gov_key=${{ secrets.DATA_GOV_KEY }}" \
+            -var="opencage_key=${{ secrets.OPENCAGE_KEY }}" \
+            -var="backend_task_url=${{ steps.get_backend_ip.outputs.backend_url }}"
+
+      # ── Step E: Print the frontend public IP so you know where to access the app ──
+      - name: Print frontend public IP
+        run: |
+          TASK_ARN=$(aws ecs list-tasks \
+            --cluster pragati-cluster \
+            --service-name pragati-frontend \
+            --desired-status RUNNING \
+            --query "taskArns[0]" \
+            --output text)
+
+          ENI_ID=$(aws ecs describe-tasks \
+            --cluster pragati-cluster \
+            --tasks "$TASK_ARN" \
+            --query "tasks[0].attachments[0].details[?name=='networkInterfaceId'].value" \
+            --output text)
+
+          FRONTEND_IP=$(aws ec2 describe-network-interfaces \
+            --network-interface-ids "$ENI_ID" \
+            --query "NetworkInterfaces[0].Association.PublicIp" \
+            --output text)
+
+          echo "============================================"
+          echo "  APP URL: http://$FRONTEND_IP"
+          echo "  API URL: http://${{ steps.get_backend_ip.outputs.backend_url }}/docs"
+          echo "============================================"
